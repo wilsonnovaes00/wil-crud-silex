@@ -1,12 +1,6 @@
 {
-    "name": "wilson-casa/wil-crud-silex",
     "require": {
-        "silex/silex": "^1.3"
+        "silex/silex": "1.0.*@dev"
     },
-    "authors": [
-        {
-            "name": "wilsonnovaes00",
-            "email": "wilsonnovaes00@hotmail.com"
-        }
-    ]
+    "minimum-stability": "dev"
 }

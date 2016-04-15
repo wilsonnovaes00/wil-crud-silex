@@ -16,8 +16,6 @@ use Silex\ServiceProviderInterface;
 use Silex\HttpCache;
 use Symfony\Component\HttpKernel\HttpCache\Esi;
 use Symfony\Component\HttpKernel\HttpCache\Store;
-use Symfony\Component\HttpKernel\EventListener\EsiListener;
-use Symfony\Component\HttpKernel\EventListener\SurrogateListener;
 
 /**
  * Symfony HttpKernel component Provider for HTTP cache.
@@ -29,12 +27,6 @@ class HttpCacheServiceProvider implements ServiceProviderInterface
     public function register(Application $app)
     {
         $app['http_cache'] = $app->share(function ($app) {
-            $app['http_cache.options'] = array_replace(
-                array(
-                    'debug' => $app['debug'],
-                ), $app['http_cache.options']
-            );
-
             return new HttpCache($app, $app['http_cache.store'], $app['http_cache.esi'], $app['http_cache.options']);
         });
 
@@ -46,19 +38,10 @@ class HttpCacheServiceProvider implements ServiceProviderInterface
             return new Store($app['http_cache.cache_dir']);
         });
 
-        $app['http_cache.esi_listener'] = $app->share(function ($app) {
-            if (class_exists('Symfony\Component\HttpKernel\EventListener\SurrogateListener')) {
-                return new SurrogateListener($app['http_cache.esi']);
-            }
-
-            return new EsiListener($app['http_cache.esi']);
-        });
-
         $app['http_cache.options'] = array();
     }
 
     public function boot(Application $app)
     {
-        $app['dispatcher']->addSubscriber($app['http_cache.esi_listener']);
     }
 }

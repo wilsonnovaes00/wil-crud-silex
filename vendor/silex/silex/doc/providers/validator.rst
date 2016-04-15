@@ -8,14 +8,13 @@ standalone.
 Parameters
 ----------
 
-* **validator.validator_service_ids**: An array of service names representing
-  validators.
+none
 
 Services
 --------
 
 * **validator**: An instance of `Validator
-  <http://api.symfony.com/master/Symfony/Component/Validator/ValidatorInterface.html>`_.
+  <http://api.symfony.com/master/Symfony/Component/Validator/Validator.html>`_.
 
 * **validator.mapping.class_metadata_factory**: Factory for metadata loaders,
   which can read validation constraint information from classes. Defaults to
@@ -24,6 +23,10 @@ Services
   This means you can define a static ``loadValidatorMetadata`` method on your
   data class, which takes a ClassMetadata argument. Then you can set
   constraints on this ClassMetadata instance.
+
+* **validator.validator_factory**: Factory for ConstraintValidators. Defaults
+  to a standard ``ConstraintValidatorFactory``. Mostly used internally by the
+  Validator.
 
 Registering
 -----------
@@ -35,11 +38,14 @@ Registering
 .. note::
 
     The Symfony Validator Component comes with the "fat" Silex archive but not
-    with the regular one. If you are using Composer, add it as a dependency:
+    with the regular one. If you are using Composer, add it as a dependency to
+    your ``composer.json`` file:
 
-    .. code-block:: bash
+    .. code-block:: json
 
-        composer require symfony/validator
+        "require": {
+            "symfony/validator": "~2.1"
+        }
 
 Usage
 -----
@@ -125,12 +131,12 @@ the class properties and getters, and then call the ``validate`` method::
     $book->title = 'My Book';
     $book->author = $author;
 
-    $metadata = $app['validator.mapping.class_metadata_factory']->getMetadataFor('Author');
+    $metadata = $app['validator.mapping.class_metadata_factory']->getClassMetadata('Author');
     $metadata->addPropertyConstraint('first_name', new Assert\NotBlank());
     $metadata->addPropertyConstraint('first_name', new Assert\Length(array('min' => 10)));
     $metadata->addPropertyConstraint('last_name', new Assert\Length(array('min' => 10)));
 
-    $metadata = $app['validator.mapping.class_metadata_factory']->getMetadataFor('Book');
+    $metadata = $app['validator.mapping.class_metadata_factory']->getClassMetadata('Book');
     $metadata->addPropertyConstraint('title', new Assert\Length(array('min' => 10)));
     $metadata->addPropertyConstraint('author', new Assert\Valid());
 
@@ -143,6 +149,11 @@ the class properties and getters, and then call the ``validate`` method::
     } else {
         echo 'The author is valid';
     }
+
+.. note::
+
+    If you are using Symfony 2.2, replace the ``getClassMetadata`` calls with
+    calls to the new ``getMetadataFor`` method.
 
 You can also declare the class constraint by adding a static
 ``loadValidatorMetadata`` method to your classes::
@@ -214,5 +225,5 @@ provider and register the messages under the ``validators`` domain::
         ),
     );
 
-For more information, consult the `Symfony Validation documentation
+For more information, consult the `Symfony2 Validation documentation
 <http://symfony.com/doc/master/book/validation.html>`_.

@@ -89,41 +89,6 @@ class ControllerCollectionTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(array('_a_a', '_a_a_'), array_keys($routes->all()));
     }
 
-    public function testUniqueGeneratedRouteNamesAmongMounts()
-    {
-        $controllers = new ControllerCollection(new Route());
-
-        $controllers->mount('/root-a', $rootA = new ControllerCollection(new Route()));
-        $controllers->mount('/root_a', $rootB = new ControllerCollection(new Route()));
-
-        $rootA->match('/leaf', function () {});
-        $rootB->match('/leaf', function () {});
-
-        $routes = $controllers->flush();
-
-        $this->assertCount(2, $routes->all());
-        $this->assertEquals(array('_root_a_leaf', '_root_a_leaf_'), array_keys($routes->all()));
-    }
-
-    public function testUniqueGeneratedRouteNamesAmongNestedMounts()
-    {
-        $controllers = new ControllerCollection(new Route());
-
-        $controllers->mount('/root-a', $rootA = new ControllerCollection(new Route()));
-        $controllers->mount('/root_a', $rootB = new ControllerCollection(new Route()));
-
-        $rootA->mount('/tree', $treeA = new ControllerCollection(new Route()));
-        $rootB->mount('/tree', $treeB = new ControllerCollection(new Route()));
-
-        $treeA->match('/leaf', function () {});
-        $treeB->match('/leaf', function () {});
-
-        $routes = $controllers->flush();
-
-        $this->assertCount(2, $routes->all());
-        $this->assertEquals(array('_root_a_tree_leaf', '_root_a_tree_leaf_'), array_keys($routes->all()));
-    }
-
     public function testAssert()
     {
         $controllers = new ControllerCollection(new Route());
@@ -164,11 +129,11 @@ class ControllerCollectionTest extends \PHPUnit_Framework_TestCase
         $controllers->requireHttp();
         $controller = $controllers->match('/{id}/{name}/{extra}', function () {})->requireHttps();
 
-        $this->assertEquals(array('https'), $controller->getRoute()->getSchemes());
+        $this->assertEquals('https', $controller->getRoute()->getRequirement('_scheme'));
 
         $controllers->requireHttp();
 
-        $this->assertEquals(array('http'), $controller->getRoute()->getSchemes());
+        $this->assertEquals('http', $controller->getRoute()->getRequirement('_scheme'));
     }
 
     public function testBefore()

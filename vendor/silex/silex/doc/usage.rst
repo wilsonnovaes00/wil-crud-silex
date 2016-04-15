@@ -1,6 +1,8 @@
 Usage
 =====
 
+This chapter describes how to use Silex.
+
 Installation
 ------------
 
@@ -16,17 +18,39 @@ it, you should have the following directory structure:
     └── web
         └── index.php
 
-If you want more flexibility, use Composer_ instead:
+If you want more flexibility, use Composer instead. Create a
+``composer.json``:
+
+.. code-block:: json
+
+    {
+        "require": {
+            "silex/silex": "~1.0"
+        }
+    }
+
+And run Composer to install Silex and all its dependencies:
 
 .. code-block:: bash
 
-    composer require silex/silex:~1.3
+    $ curl -s http://getcomposer.org/installer | php
+    $ php composer.phar install
 
-Web Server
-----------
+.. tip::
 
-All examples in the documentation rely on a well-configured web server; read
-the :doc:`webserver documentation<web_servers>` to check yours.
+    By default, Silex relies on the stable Symfony components. If you want to
+    use their master version instead, add ``"minimum-stability": "dev"`` in
+    your ``composer.json`` file.
+
+Upgrading
+---------
+
+Upgrading Silex to the latest version is as easy as running the ``update``
+command:
+
+.. code-block:: bash
+
+    $ php composer.phar update
 
 Bootstrap
 ---------
@@ -36,13 +60,17 @@ file and create an instance of ``Silex\Application``. After your controller
 definitions, call the ``run`` method on your application::
 
     // web/index.php
+
     require_once __DIR__.'/../vendor/autoload.php';
 
     $app = new Silex\Application();
 
-    // ... definitions
+    // definitions
 
     $app->run();
+
+Then, you have to configure your web server (read the :doc:`dedicated chapter
+<web_servers>` for more information).
 
 .. tip::
 
@@ -53,9 +81,9 @@ definitions, call the ``run`` method on your application::
 
 .. tip::
 
-    If your application is hosted behind a reverse proxy at address ``$ip``,
-    and you want Silex to trust the ``X-Forwarded-For*`` headers, you will
-    need to run your application like this::
+    If your application is hosted behind a reverse proxy at address $ip, and you
+    want Silex to trust the ``X-Forwarded-For*`` headers, you will need to run
+    your application like this::
 
         use Symfony\Component\HttpFoundation\Request;
 
@@ -66,25 +94,38 @@ Routing
 -------
 
 In Silex you define a route and the controller that is called when that
-route is matched. A route pattern consists of:
+route is matched.
+
+A route pattern consists of:
 
 * *Pattern*: The route pattern defines a path that points to a resource. The
   pattern can include variable parts and you are able to set RegExp
   requirements for them.
 
-* *Method*: One of the following HTTP methods: ``GET``, ``POST``, ``PUT``,
-  ``DELETE``, ``PATCH``, or ``OPTIONS``. This describes the interaction with
-  the resource.
+* *Method*: One of the following HTTP methods: ``GET``, ``POST``, ``PUT`` or
+  ``DELETE``. This describes the interaction with the resource. Commonly only
+  ``GET`` and ``POST`` are used, but it is possible to use the others as well.
 
 The controller is defined using a closure like this::
 
     function () {
-        // ... do something
+        // do something
     }
+
+Closures are anonymous functions that may import state from outside of their
+definition. This is different from globals, because the outer state does not
+have to be global. For instance, you could define a closure in a function and
+import local variables of that function.
+
+.. note::
+
+    Closures that do not import scope are referred to as lambdas. Because in
+    PHP all anonymous functions are instances of the ``Closure`` class, we
+    will not make a distinction here.
 
 The return value of the closure becomes the content of the page.
 
-Example GET Route
+Example GET route
 ~~~~~~~~~~~~~~~~~
 
 Here is an example definition of a ``GET`` route::
@@ -110,10 +151,10 @@ Here is an example definition of a ``GET`` route::
 
 Visiting ``/blog`` will return a list of blog post titles. The ``use``
 statement means something different in this context. It tells the closure to
-import the ``$blogPosts`` variable from the outer scope. This allows you to use
-it from within the closure.
+import the $blogPosts variable from the outer scope. This allows you to use it
+from within the closure.
 
-Dynamic Routing
+Dynamic routing
 ~~~~~~~~~~~~~~~
 
 Now, you can create another controller for viewing individual blog posts::
@@ -135,15 +176,15 @@ closure.
 The current ``Application`` is automatically injected by Silex to the Closure
 thanks to the type hinting.
 
-When the post does not exist, you are using ``abort()`` to stop the request
-early. It actually throws an exception, which you will see how to handle later
+When the post does not exist, we are using ``abort()`` to stop the request
+early. It actually throws an exception, which we will see how to handle later
 on.
 
-Example POST Route
+Example POST route
 ~~~~~~~~~~~~~~~~~~
 
 POST routes signify the creation of a resource. An example for this is a
-feedback form. You will use the ``mail`` function to send an e-mail::
+feedback form. We will use the ``mail`` function to send an e-mail::
 
     use Symfony\Component\HttpFoundation\Request;
     use Symfony\Component\HttpFoundation\Response;
@@ -163,34 +204,32 @@ It is pretty straightforward.
     included that you can use instead of ``mail()``.
 
 The current ``request`` is automatically injected by Silex to the Closure
-thanks to the type hinting. It is an instance of
-Request_, so you can fetch variables using the request ``get`` method.
+thanks to the type hinting. It is an instance of `Request
+<http://api.symfony.com/master/Symfony/Component/HttpFoundation/Request.html>`_,
+so you can fetch variables using the request ``get`` method.
 
-Instead of returning a string you are returning an instance of Response_.
-This allows setting an HTTP status code, in this case it is set to
-``201 Created``.
+Instead of returning a string we are returning an instance of `Response
+<http://api.symfony.com/master/Symfony/Component/HttpFoundation/Response.html>`_.
+This allows setting an HTTP status code, in this case it is set to ``201
+Created``.
 
 .. note::
 
     Silex always uses a ``Response`` internally, it converts strings to
-    responses with status code ``200``.
+    responses with status code ``200 Ok``.
 
 Other methods
 ~~~~~~~~~~~~~
 
 You can create controllers for most HTTP methods. Just call one of these
-methods on your application: ``get``, ``post``, ``put``, ``delete``, ``patch``, ``options``::
+methods on your application: ``get``, ``post``, ``put``, ``delete``::
 
     $app->put('/blog/{id}', function ($id) {
-        // ...
+        ...
     });
 
     $app->delete('/blog/{id}', function ($id) {
-        // ...
-    });
-
-    $app->patch('/blog/{id}', function ($id) {
-        // ...
+        ...
     });
 
 .. tip::
@@ -198,16 +237,15 @@ methods on your application: ``get``, ``post``, ``put``, ``delete``, ``patch``, 
     Forms in most web browsers do not directly support the use of other HTTP
     methods. To use methods other than GET and POST you can utilize a special
     form field with a name of ``_method``. The form's ``method`` attribute must
-    be set to POST when using this field:
-
-    .. code-block:: html
+    be set to POST when using this field::
 
         <form action="/my/target/route/" method="post">
-            <!-- ... -->
+            ...
             <input type="hidden" id="_method" name="_method" value="PUT" />
         </form>
 
-    you need to explicitly enable this method override::
+    If using Symfony Components 2.2+ you will need to explicitly enable this
+    method override::
 
         use Symfony\Component\HttpFoundation\Request;
 
@@ -218,52 +256,53 @@ You can also call ``match``, which will match all methods. This can be
 restricted via the ``method`` method::
 
     $app->match('/blog', function () {
-        // ...
-    });
-
-    $app->match('/blog', function () {
-        // ...
+        ...
     })
     ->method('PATCH');
 
     $app->match('/blog', function () {
-        // ...
+        ...
     })
     ->method('PUT|POST');
+
+    $app->match('/blog', function () {
+        ...
+    });
 
 .. note::
 
     The order in which the routes are defined is significant. The first
     matching route will be used, so place more generic routes at the bottom.
 
-Route Variables
+
+Route variables
 ~~~~~~~~~~~~~~~
 
 As it has been shown before you can define variable parts in a route like
 this::
 
     $app->get('/blog/{id}', function ($id) {
-        // ...
+        ...
     });
 
 It is also possible to have more than one variable part, just make sure the
 closure arguments match the names of the variable parts::
 
     $app->get('/blog/{postId}/{commentId}', function ($postId, $commentId) {
-        // ...
+        ...
     });
 
-While it's not recommended, you could also do this (note the switched
+While it's not suggested, you could also do this (note the switched
 arguments)::
 
     $app->get('/blog/{postId}/{commentId}', function ($commentId, $postId) {
-        // ...
+        ...
     });
 
 You can also ask for the current Request and Application objects::
 
     $app->get('/blog/{id}', function (Application $app, Request $request, $id) {
-        // ...
+        ...
     });
 
 .. note::
@@ -272,11 +311,11 @@ You can also ask for the current Request and Application objects::
     based on the type hinting and not on the variable name::
 
         $app->get('/blog/{id}', function (Application $foo, Request $bar, $id) {
-            // ...
+            ...
         });
 
-Route Variable Converters
-~~~~~~~~~~~~~~~~~~~~~~~~~
+Route variables converters
+~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Before injecting the route variables into the controller, you can apply some
 converters::
@@ -310,43 +349,6 @@ The converter callback also receives the ``Request`` as its second argument::
         // ...
     })->convert('post', $callback);
 
-A converter can also be defined as a service. For example, here is a user
-converter based on Doctrine ObjectManager::
-
-    use Doctrine\Common\Persistence\ObjectManager;
-    use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-
-    class UserConverter
-    {
-        private $om;
-
-        public function __construct(ObjectManager $om)
-        {
-            $this->om = $om;
-        }
-
-        public function convert($id)
-        {
-            if (null === $user = $this->om->find('User', (int) $id)) {
-                throw new NotFoundHttpException(sprintf('User %d does not exist', $id));
-            }
-
-            return $user;
-        }
-    }
-
-The service will now be registered in the application, and the
-``convert()`` method will be used as converter (using the syntax
-``service_name:method_name``)::
-
-    $app['converter.user'] = $app->share(function () {
-        return new UserConverter();
-    });
-
-    $app->get('/user/{user}', function (User $user) {
-        // ...
-    })->convert('user', 'converter.user:convert');
-
 Requirements
 ~~~~~~~~~~~~
 
@@ -354,88 +356,95 @@ In some cases you may want to only match certain expressions. You can define
 requirements using regular expressions by calling ``assert`` on the
 ``Controller`` object, which is returned by the routing methods.
 
-The following will make sure the ``id`` argument is a positive integer, since
-``\d+`` matches any amount of digits::
+The following will make sure the ``id`` argument is numeric, since ``\d+``
+matches any amount of digits::
 
     $app->get('/blog/{id}', function ($id) {
-        // ...
+        ...
     })
     ->assert('id', '\d+');
 
 You can also chain these calls::
 
     $app->get('/blog/{postId}/{commentId}', function ($postId, $commentId) {
-        // ...
+        ...
     })
     ->assert('postId', '\d+')
     ->assert('commentId', '\d+');
 
-Default Values
+Default values
 ~~~~~~~~~~~~~~
 
 You can define a default value for any route variable by calling ``value`` on
 the ``Controller`` object::
 
     $app->get('/{pageName}', function ($pageName) {
-        // ...
+        ...
     })
     ->value('pageName', 'index');
 
 This will allow matching ``/``, in which case the ``pageName`` variable will
 have the value ``index``.
 
-Named Routes
+Named routes
 ~~~~~~~~~~~~
 
-Some providers (such as ``UrlGeneratorProvider``) can make use of named routes.
-By default Silex will generate an internal route name for you but you can give
-an explicit route name by calling ``bind``::
+Some providers (such as ``UrlGeneratorProvider``) can make use of named
+routes. By default Silex will generate a route name for you, that cannot
+really be used. You can give a route a name by calling ``bind`` on the
+``Controller`` object that is returned by the routing methods::
 
     $app->get('/', function () {
-        // ...
+        ...
     })
     ->bind('homepage');
 
     $app->get('/blog/{id}', function ($id) {
-        // ...
+        ...
     })
     ->bind('blog_post');
 
-Controllers as Classes
+
+.. note::
+
+    It only makes sense to name routes if you use providers that make use of
+    the ``RouteCollection``.
+
+Controllers in classes
 ~~~~~~~~~~~~~~~~~~~~~~
 
-Instead of anonymous functions, you can also define your controllers as
-methods. By using the ``ControllerClass::methodName`` syntax, you can tell
-Silex to lazily create the controller object for you::
+If you don't want to use anonymous functions, you can also define your
+controllers as methods. By using the ``ControllerClass::methodName`` syntax,
+you can tell Silex to lazily create the controller object for you::
 
-    $app->get('/', 'Acme\\Foo::bar');
+    $app->get('/', 'Igorw\Foo::bar');
 
     use Silex\Application;
     use Symfony\Component\HttpFoundation\Request;
 
-    namespace Acme
+    namespace Igorw
     {
         class Foo
         {
             public function bar(Request $request, Application $app)
             {
-                // ...
+                ...
             }
         }
     }
 
-This will load the ``Acme\Foo`` class on demand, create an instance and call
+This will load the ``Igorw\Foo`` class on demand, create an instance and call
 the ``bar`` method to get the response. You can use ``Request`` and
 ``Silex\Application`` type hints to get ``$request`` and ``$app`` injected.
 
-It is also possible to :doc:`define your controllers as services
-<providers/service_controller>`.
+For an even stronger separation between Silex and your controllers, you can
+:doc:`define your controllers as services <providers/service_controller>`.
 
 Global Configuration
 --------------------
 
-If a controller setting must be applied to **all** controllers (a converter, a
-middleware, a requirement, or a default value), configure it on
+If a controller setting must be applied to all controllers (a converter, a
+middleware, a requirement, or a default value), you can configure it on
 ``$app['controllers']``, which holds all application controllers::
 
     $app['controllers']
@@ -456,12 +465,12 @@ the defaults for new controllers.
     mount as they have their own global configuration (read the
     :doc:`dedicated chapter<organizing_controllers>` for more information).
 
-Error Handlers
+Error handlers
 --------------
 
-When an exception is thrown, error handlers allow you to display a custom
-error page to the user. They can also be used to do additional things, such as
-logging.
+If some part of your code throws an exception you will want to display some
+kind of error page to the user. This is what error handlers do. You can also
+use them to do additional things, such as logging.
 
 To register an error handler, pass a closure to the ``error`` method which
 takes an ``Exception`` argument and returns a response::
@@ -489,31 +498,32 @@ handle them differently::
         return new Response($message);
     });
 
-You can restrict an error handler to only handle some Exception classes by
-setting a more specific type hint for the Closure argument::
-
-    $app->error(function (\LogicException $e, $code) {
-        // this handler will only handle \LogicException exceptions
-        // and exceptions that extend \LogicException
-    });
-
 .. note::
 
     As Silex ensures that the Response status code is set to the most
     appropriate one depending on the exception, setting the status on the
-    response won't work. If you want to overwrite the status code, set the
-    ``X-Status-Code`` header::
+    response won't work. If you want to overwrite the status code (which you
+    should not without a good reason), set the ``X-Status-Code`` header::
 
         return new Response('Error', 404 /* ignored */, array('X-Status-Code' => 200));
 
-If you want to use a separate error handler for logging, make sure you register
-it with a higher priority than response error handlers, because once a response
-is returned, the following handlers are ignored.
+You can restrict an error handler to only handle some Exception classes by
+setting a more specific type hint for the Closure argument::
+
+    $app->error(function (\LogicException $e, $code) {
+        // this handler will only \LogicException exceptions
+        // and exceptions that extends \LogicException
+    });
+
+If you want to set up logging you can use a separate error handler for that.
+Just make sure you register it before the response error handlers, because
+once a response is returned, the following handlers are ignored.
 
 .. note::
 
-    Silex ships with a provider for Monolog_ which handles logging of errors.
-    Check out the *Providers* :doc:`chapter <providers/monolog>` for details.
+    Silex ships with a provider for `Monolog
+    <https://github.com/Seldaek/monolog>`_ which handles logging of errors.
+    Check out the *Providers* chapter for details.
 
 .. tip::
 
@@ -530,7 +540,7 @@ is returned, the following handlers are ignored.
                 return;
             }
 
-            // ... logic to handle the error and return a Response
+            // logic to handle the error and return a Response
         });
 
 The error handlers are also called when you use ``abort`` to abort a request
@@ -544,55 +554,11 @@ early::
         return new Response(...);
     });
 
-You can convert errors to ``Exceptions``, check out the cookbook :doc:`chapter <cookbook/error_handler>` for details.
-
-View Handlers
--------------
-
-View Handlers allow you to intercept a controller result that is not a
-``Response`` and transform it before it gets returned to the kernel.
-
-To register a view handler, pass a callable (or string that can be resolved to a
-callable) to the ``view()`` method. The callable should accept some sort of result
-from the controller::
-
-    $app->view(function (array $controllerResult) use ($app) {
-        return $app->json($controllerResult);
-    });
-
-View Handlers also receive the ``Request`` as their second argument,
-making them a good candidate for basic content negotiation::
-
-    $app->view(function (array $controllerResult, Request $request) use ($app) {
-        $acceptHeader = $request->headers->get('Accept');
-        $bestFormat = $app['negotiator']->getBestFormat($acceptHeader, array('json', 'xml'));
-
-        if ('json' === $bestFormat) {
-            return new JsonResponse($controllerResult);
-        }
-
-        if ('xml' === $bestFormat) {
-            return $app['serializer.xml']->renderResponse($controllerResult);
-        }
-
-        return $controllerResult;
-    });
-
-View Handlers will be examined in the order they are added to the application
-and Silex will use type hints to determine if a view handler should be used for
-the current result, continuously using the return value of the last view handler
-as the input for the next.
-
-.. note::
-
-    You must ensure that Silex receives a ``Response`` or a string as the result of
-    the last view handler (or controller) to be run.
-
 Redirects
 ---------
 
-You can redirect to another page by returning a ``RedirectResponse`` response,
-which you can create by calling the ``redirect`` method::
+You can redirect to another page by returning a redirect response, which you
+can create by calling the ``redirect`` method::
 
     $app->get('/', function () use ($app) {
         return $app->redirect('/hello');
@@ -610,7 +576,7 @@ round-trip to the browser (as for a redirect), use an internal sub-request::
     use Symfony\Component\HttpKernel\HttpKernelInterface;
 
     $app->get('/', function () use ($app) {
-        // forward to /hello
+        // redirect to /hello
         $subRequest = Request::create('/hello', 'GET');
 
         return $app->handle($subRequest, HttpKernelInterface::SUB_REQUEST);
@@ -639,7 +605,6 @@ response for you::
 
         if (!$user) {
             $error = array('message' => 'The user was not found.');
-
             return $app->json($error, 404);
         }
 
@@ -649,8 +614,8 @@ response for you::
 Streaming
 ---------
 
-It's possible to stream a response, which is important in cases when you don't
-want to buffer the data being sent::
+It's possible to create a streaming response, which is important in cases when
+you cannot buffer the data being sent::
 
     $app->get('/images/{file}', function ($file) use ($app) {
         if (!file_exists(__DIR__.'/images/'.$file)) {
@@ -670,9 +635,9 @@ after every chunk::
     $stream = function () {
         $fh = fopen('http://www.example.com/', 'rb');
         while (!feof($fh)) {
-            echo fread($fh, 1024);
-            ob_flush();
-            flush();
+          echo fread($fh, 1024);
+          ob_flush();
+          flush();
         }
         fclose($fh);
     };
@@ -683,7 +648,7 @@ Sending a file
 If you want to return a file, you can use the ``sendFile`` helper method.
 It eases returning files that would otherwise not be publicly available. Simply
 pass it your file path, status code, headers and the content disposition and it
-will create a ``BinaryFileResponse`` response for you::
+will create a ``BinaryFileResponse`` based response for you::
 
     $app->get('/files/{path}', function ($path) use ($app) {
         if (!file_exists('/base/path/' . $path)) {
@@ -701,6 +666,10 @@ To further customize the response before returning it, check the API doc for
         ->sendFile('/base/path/' . $path)
         ->setContentDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT, 'pic.jpg')
     ;
+
+.. note::
+
+    HttpFoundation 2.2 or greater is required for this feature to be available.
 
 Traits
 ------
@@ -751,32 +720,27 @@ Make sure to protect your application against attacks.
 Escaping
 ~~~~~~~~
 
-When outputting any user input, make sure to escape it correctly to prevent
-Cross-Site-Scripting attacks.
+When outputting any user input (either route variables GET/POST variables
+obtained from the request), you will have to make sure to escape it correctly,
+to prevent Cross-Site-Scripting attacks.
 
 * **Escaping HTML**: PHP provides the ``htmlspecialchars`` function for this.
   Silex provides a shortcut ``escape`` method::
 
       $app->get('/name', function (Silex\Application $app) {
           $name = $app['request']->get('name');
-
           return "You provided the name {$app->escape($name)}.";
       });
 
-  If you use the Twig template engine, you should use its escaping or even
-  auto-escaping mechanisms. Check out the *Providers* :doc:`chapter <providers/twig>` for details.
+  If you use the Twig template engine you should use its escaping or even
+  auto-escaping mechanisms.
 
 * **Escaping JSON**: If you want to provide data in JSON format you should
   use the Silex ``json`` function::
 
       $app->get('/name.json', function (Silex\Application $app) {
           $name = $app['request']->get('name');
-
           return $app->json(array('name' => $name));
       });
 
 .. _download: http://silex.sensiolabs.org/download
-.. _Composer: http://getcomposer.org/
-.. _Request: http://api.symfony.com/master/Symfony/Component/HttpFoundation/Request.html
-.. _Response: http://api.symfony.com/master/Symfony/Component/HttpFoundation/Response.html
-.. _Monolog: https://github.com/Seldaek/monolog

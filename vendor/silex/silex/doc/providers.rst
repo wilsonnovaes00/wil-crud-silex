@@ -32,7 +32,7 @@ Conventions
 ~~~~~~~~~~~
 
 You need to watch out in what order you do certain things when interacting
-with providers. Just keep these rules in mind:
+with providers. Just keep to these rules:
 
 * Overriding existing services must occur **after** the provider is
   registered.
@@ -45,6 +45,8 @@ with providers. Just keep these rules in mind:
   *Reason: Providers can set default values for parameters. Just like with
   services, the provider will overwrite existing values.*
 
+Make sure to stick to this behavior when creating your own providers.
+
 Included providers
 ~~~~~~~~~~~~~~~~~~
 
@@ -52,26 +54,25 @@ There are a few providers that you get out of the box. All of these are within
 the ``Silex\Provider`` namespace:
 
 * :doc:`DoctrineServiceProvider <providers/doctrine>`
-* :doc:`FormServiceProvider <providers/form>`
-* :doc:`HttpCacheServiceProvider <providers/http_cache>`
 * :doc:`MonologServiceProvider <providers/monolog>`
-* :doc:`RememberMeServiceProvider <providers/remember_me>`
-* :doc:`SecurityServiceProvider <providers/security>`
-* :doc:`SerializerServiceProvider <providers/serializer>`
-* :doc:`ServiceControllerServiceProvider <providers/service_controller>`
 * :doc:`SessionServiceProvider <providers/session>`
+* :doc:`SerializerServiceProvider <providers/serializer>`
 * :doc:`SwiftmailerServiceProvider <providers/swiftmailer>`
-* :doc:`TranslationServiceProvider <providers/translation>`
 * :doc:`TwigServiceProvider <providers/twig>`
+* :doc:`TranslationServiceProvider <providers/translation>`
 * :doc:`UrlGeneratorServiceProvider <providers/url_generator>`
 * :doc:`ValidatorServiceProvider <providers/validator>`
+* :doc:`HttpCacheServiceProvider <providers/http_cache>`
+* :doc:`FormServiceProvider <providers/form>`
+* :doc:`SecurityServiceProvider <providers/security>`
+* :doc:`ServiceControllerServiceProvider <providers/service_controller>`
 
 Third party providers
 ~~~~~~~~~~~~~~~~~~~~~
 
 Some service providers are developed by the community. Those third-party
 providers are listed on `Silex' repository wiki
-<https://github.com/silexphp/Silex/wiki/Third-Party-ServiceProviders>`_.
+<https://github.com/fabpot/Silex/wiki/Third-Party-ServiceProviders>`_.
 
 You are encouraged to share yours.
 
@@ -82,15 +83,15 @@ Providers must implement the ``Silex\ServiceProviderInterface``::
 
     interface ServiceProviderInterface
     {
-        public function register(Application $app);
+        function register(Application $app);
 
-        public function boot(Application $app);
+        function boot(Application $app);
     }
 
-The ``register()`` method defines services on the application which then may
-make use of other services and parameters.
-
-The ``boot()`` method configures the application, just before it handles a
+This is very straight forward, just create a new class that implements the two
+methods. In the ``register()`` method, you can define services on the
+application which then may make use of other services and parameters. In the
+``boot()`` method, you can configure the application, just before it handles a
 request.
 
 Here is an example of such a provider::
@@ -138,10 +139,8 @@ You can now use this provider as follows::
 In this example we are getting the ``name`` parameter from the query string,
 so the request path would have to be ``/hello?name=Fabien``.
 
-.. _controller-providers:
-
-Controller Providers
---------------------
+Controllers providers
+---------------------
 
 Loading providers
 ~~~~~~~~~~~~~~~~~
@@ -163,7 +162,7 @@ Providers must implement the ``Silex\ControllerProviderInterface``::
 
     interface ControllerProviderInterface
     {
-        public function connect(Application $app);
+        function connect(Application $app);
     }
 
 Here is an example of such a provider::
@@ -196,7 +195,7 @@ defined (like ``get``, ``post``, ``match``, ...).
 
     The ``Application`` class acts in fact as a proxy for these methods.
 
-You can use this provider as follows::
+You can now use this provider as follows::
 
     $app = new Silex\Application();
 

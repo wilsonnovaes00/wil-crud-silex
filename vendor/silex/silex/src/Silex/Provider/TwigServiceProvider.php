@@ -13,11 +13,11 @@ namespace Silex\Provider;
 
 use Silex\Application;
 use Silex\ServiceProviderInterface;
+
 use Symfony\Bridge\Twig\Extension\RoutingExtension;
 use Symfony\Bridge\Twig\Extension\TranslationExtension;
 use Symfony\Bridge\Twig\Extension\FormExtension;
 use Symfony\Bridge\Twig\Extension\SecurityExtension;
-use Symfony\Bridge\Twig\Extension\HttpKernelExtension;
 use Symfony\Bridge\Twig\Form\TwigRendererEngine;
 use Symfony\Bridge\Twig\Form\TwigRenderer;
 
@@ -38,14 +38,15 @@ class TwigServiceProvider implements ServiceProviderInterface
         $app['twig'] = $app->share(function ($app) {
             $app['twig.options'] = array_replace(
                 array(
-                    'charset' => $app['charset'],
-                    'debug' => $app['debug'],
+                    'charset'          => $app['charset'],
+                    'debug'            => $app['debug'],
                     'strict_variables' => $app['debug'],
                 ), $app['twig.options']
             );
 
             $twig = new \Twig_Environment($app['twig.loader'], $app['twig.options']);
             $twig->addGlobal('app', $app);
+            $twig->addExtension(new TwigCoreExtension());
 
             if ($app['debug']) {
                 $twig->addExtension(new \Twig_Extension_Debug());
@@ -60,14 +61,8 @@ class TwigServiceProvider implements ServiceProviderInterface
                     $twig->addExtension(new TranslationExtension($app['translator']));
                 }
 
-                if (isset($app['security.authorization_checker'])) {
-                    $twig->addExtension(new SecurityExtension($app['security.authorization_checker']));
-                }
-
-                if (isset($app['fragment.handler'])) {
-                    $app['fragment.renderer.hinclude']->setTemplating($twig);
-
-                    $twig->addExtension(new HttpKernelExtension($app['fragment.handler']));
+                if (isset($app['security'])) {
+                    $twig->addExtension(new SecurityExtension($app['security']));
                 }
 
                 if (isset($app['form.factory'])) {

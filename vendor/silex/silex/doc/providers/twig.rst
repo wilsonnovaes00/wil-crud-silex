@@ -42,45 +42,51 @@ Registering
 .. note::
 
     Twig comes with the "fat" Silex archive but not with the regular one. If
-    you are using Composer, add it as a dependency:
+    you are using Composer, add it as a dependency to your ``composer.json``
+    file:
 
-    .. code-block:: bash
+    .. code-block:: json
 
-        composer require twig/twig
+        "require": {
+            "twig/twig": ">=1.8,<2.0-dev"
+        }
 
-Symfony Components Integration
-------------------------------
+Symfony2 Components Integration
+-------------------------------
 
 Symfony provides a Twig bridge that provides additional integration between
-some Symfony components and Twig. Add it as a dependency:
+some Symfony2 components and Twig. Add it as a dependency to your
+``composer.json`` file:
 
-.. code-block:: bash
+.. code-block:: json
 
-    composer require symfony/twig-bridge
+    "require": {
+        "symfony/twig-bridge": "~2.1"
+    }
 
 When present, the ``TwigServiceProvider`` will provide you with the following
 additional capabilities:
 
 * **UrlGeneratorServiceProvider**: If you are using the
   ``UrlGeneratorServiceProvider``, you will have access to the ``path()`` and
-  ``url()`` functions. You can find more information in the `Symfony Routing
+  ``url()`` functions. You can find more information in the `Symfony2 Routing
   documentation
   <http://symfony.com/doc/current/book/routing.html#generating-urls-from-a-template>`_.
 
 * **TranslationServiceProvider**: If you are using the
   ``TranslationServiceProvider``, you will get the ``trans()`` and
   ``transchoice()`` functions for translation in Twig templates. You can find
-  more information in the `Symfony Translation documentation
+  more information in the `Symfony2 Translation documentation
   <http://symfony.com/doc/current/book/translation.html#twig-templates>`_.
 
 * **FormServiceProvider**: If you are using the ``FormServiceProvider``, you
   will get a set of helpers for working with forms in templates. You can find
-  more information in the `Symfony Forms reference
+  more information in the `Symfony2 Forms reference
   <http://symfony.com/doc/current/reference/forms/twig_reference.html>`_.
 
 * **SecurityServiceProvider**: If you are using the
   ``SecurityServiceProvider``, you will have access to the ``is_granted()``
-  function in templates. You can find more information in the `Symfony
+  function in templates. You can find more information in the `Symfony2
   Security documentation
   <http://symfony.com/doc/current/book/security.html#access-control-in-templates>`_.
 
@@ -112,7 +118,7 @@ from a template:
 
     {{ render(app.request.baseUrl ~ '/sidebar') }}
 
-    {# or if you are also using the UrlGeneratorServiceProvider #}
+    {# or if you are also using UrlGeneratorServiceProvider with the SymfonyBridgesServiceProvider #}
     {{ render(url('sidebar')) }}
 
 .. note::
@@ -157,5 +163,5 @@ You can configure the Twig environment before using it by extending the
         return $twig;
     }));
 
-For more information, check out the `official Twig documentation
+For more information, check out the `Twig documentation
 <http://twig.sensiolabs.org>`_.

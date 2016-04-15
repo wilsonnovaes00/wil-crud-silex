@@ -26,7 +26,7 @@ class SessionServiceProviderTest extends WebTestCase
 {
     public function testRegister()
     {
-        /*
+        /**
          * Smoke test
          */
         $defaultStorage = $this->app['session.storage.native'];
@@ -94,7 +94,7 @@ class SessionServiceProviderTest extends WebTestCase
         });
 
         $app['debug'] = true;
-        unset($app['exception_handler']);
+        $app['exception_handler']->disable();
 
         $client = new Client($app);
 

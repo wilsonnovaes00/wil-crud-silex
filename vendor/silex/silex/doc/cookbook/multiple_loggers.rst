@@ -1,7 +1,7 @@
-Using multiple Monolog Loggers
+Using multiple monolog loggers
 ==============================
 
-Having separate instances of Monolog for different parts of your system is
+Having separate instances of `Monolog` for different parts of your system is
 often desirable and allows you to configure them independently, allowing for fine
 grained control of where your logging goes and in what detail.
 
@@ -44,15 +44,15 @@ on some conventions, such as checking for an array of handlers registered with
 the container with the channel name, defaulting to the bundled handler.
 
 .. code-block:: php
-
+    
     use Monolog\Handler\StreamHandler;
     use Monolog\Logger;
 
     $app['monolog.factory'] = $app->protect(function ($name) use ($app) {
         $log = new $app['monolog.logger.class']($name);
 
-        $handlers = isset($app['monolog.'.$name.'.handlers'])
-            ? $app['monolog.'.$name.'.handlers']
+        $handlers = isset($app['monolog.'.$name.'handlers'])
+            ? $app['monolog.'.$name.'handlers']
             : array($app['monolog.handler']);
 
         foreach ($handlers as $handler) {
@@ -67,3 +67,5 @@ the container with the channel name, defaulting to the bundled handler.
             new StreamHandler(__DIR__.'/../payments.log', Logger::DEBUG),
         );
     });
+
+

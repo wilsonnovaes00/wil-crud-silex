@@ -13,8 +13,6 @@ namespace Silex\EventListener;
 
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\EventListener\LocaleListener as BaseLocaleListener;
-use Symfony\Component\HttpKernel\Kernel;
-use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Routing\RequestContextAwareInterface;
 use Silex\Application;
 
@@ -27,13 +25,9 @@ class LocaleListener extends BaseLocaleListener
 {
     protected $app;
 
-    public function __construct(Application $app, RequestContextAwareInterface $router = null, RequestStack $requestStack = null)
+    public function __construct(Application $app, RequestContextAwareInterface $router = null)
     {
-        if (Kernel::VERSION_ID >= 20800) {
-            parent::__construct($requestStack, $app['locale'], $router);
-        } else {
-            parent::__construct($app['locale'], $router, $requestStack);
-        }
+        parent::__construct($app['locale'], $router);
 
         $this->app = $app;
     }

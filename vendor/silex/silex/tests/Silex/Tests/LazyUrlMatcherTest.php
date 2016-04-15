@@ -29,7 +29,7 @@ class LazyUrlMatcherTest extends \PHPUnit_Framework_TestCase
         $urlMatcher = $this->getMock('Symfony\Component\Routing\Matcher\UrlMatcherInterface');
 
         $matcher = new LazyUrlMatcher(function () use ($urlMatcher, &$callCounter) {
-            ++$callCounter;
+            $callCounter++;
 
             return $urlMatcher;
         });
@@ -40,7 +40,7 @@ class LazyUrlMatcherTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException \LogicException
+     * @expectedException LogicException
      * @expectedExceptionMessage Factory supplied to LazyUrlMatcher must return implementation of UrlMatcherInterface.
      */
     public function testThatCanInjectUrlMatcherOnly()
@@ -85,7 +85,7 @@ class LazyUrlMatcherTest extends \PHPUnit_Framework_TestCase
         $matcher = new LazyUrlMatcher(function () use ($urlMatcher) {
             return $urlMatcher;
         });
-        $matcher->setContext($context);
+        $result = $matcher->setContext($context);
     }
 
     /**
