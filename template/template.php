@@ -4,17 +4,10 @@
 
 	<!-- Add Style and Bootstrap-->
 
-	<link href="css/bootstrap.min.css" rel="stylesheet">
-	<link href="css/style.css" rel="stylesheet">
-
-
-
 	<meta charset="UTF-8">
 	<title>Crud with Silex</title>
 </head>
 <body>
-
-
 	
 </body>
 </html>
