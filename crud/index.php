@@ -14,7 +14,7 @@ $app['debug'] = true;
 
 $app->get('/', function () use ($app) {
 
-    return new Response(file_get_contents('../pg/templates/template.html'), 200);
+    return new Response(file_get_contents('../template/template.html'), 200);
 });
 
 
