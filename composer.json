@@ -1,6 +1,9 @@
 {
     "require": {
-        "silex/silex": "1.0.*@dev"
+        "silex/silex": "1.0.*@dev",
+	"twig/twig": ">=1.8,<2.0-dev",
+	"symfony/twig-bridge": "~2.3",
+	"twig/extensions": "~1.0"
     },
     "minimum-stability": "dev"
 }
