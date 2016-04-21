@@ -17,13 +17,14 @@ $app['debug'] = true;
 
 #Registering a Twig Provider
 $app->register(new Silex\Provider\TwigServiceProvider(), array(
-    'twig.path' => __DIR__.'/template',
+    'twig.path' => __DIR__.'/../template',
 ));
 
 
 #Routes
 $app->get('/', function () use ($app) {
 
+    return $app['twig']->render('hello.twig');
 });
 
 
