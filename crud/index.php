@@ -17,9 +17,11 @@ $app['debug'] = true;
 
 #Registering a Twig Provider
 $app->register(new Silex\Provider\TwigServiceProvider(), array(
-    'twig.path' => __DIR__.'/../template',
+    'twig.path' => __DIR__ . '/template',
 ));
 
+#Registering a URL Generator Provider
+$app->register(new Silex\Provider\UrlGeneratorServiceProvider());
 
 #Routes
 $app->get('/', function () use ($app) {
