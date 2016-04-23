@@ -26,7 +26,7 @@ $app->register(new Silex\Provider\UrlGeneratorServiceProvider());
 #Routes
 $app->get('/', function () use ($app) {
 
-    return $app['twig']->render('hello.twig');
+    return $app['twig']->render('layout.twig');
 });
 
 
