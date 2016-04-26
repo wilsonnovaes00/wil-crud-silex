@@ -26,9 +26,18 @@ $app->register(new Silex\Provider\UrlGeneratorServiceProvider());
 #Routes
 $app->get('/', function () use ($app) {
 
-    
+
     return $app['twig']->render('home.twig');
 });
+
+
+$app->get('/contact', function () use ($app) {
+
+
+    return $app['twig']->render('contact.twig');
+});
+
+
 
 
 $app->run();
