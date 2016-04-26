@@ -38,6 +38,16 @@ $app->get('/contact', function () use ($app) {
 });
 
 
+$app->get('/aboutme', function () use ($app) {
+
+
+    return $app['twig']->render('about.twig');
+});
+
+
+
+
+
 
 
 $app->run();

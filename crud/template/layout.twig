@@ -20,7 +20,9 @@
 
     <!-- Bootstrap Core CSS -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
-
+    <link href="css/main.css" rel="stylesheet">
+    <link href="css/font-awesome.css" rel="stylesheet">
+    <link href='https://fonts.googleapis.com/css?family=Bree+Serif|Play' rel='stylesheet' type='text/css'>
     <!-- Custom CSS -->
     <link href="css/simple-sidebar.css" rel="stylesheet">
 
@@ -48,30 +50,34 @@
     <div id="sidebar-wrapper">
         <ul class="sidebar-nav">
             <li class="sidebar-brand">
-                <a href="#">
-                    Start Bootstrap
-                </a>
+                <div id="logo-top">
+                
+                   <img src="../img/logo.png" width="40" height="40" /> <span id="logo">Simple Crud</span>
+
+                </div>
+
             </li>
             <li>
-                <a href="#">Dashboard</a>
+                <a href="#"><i class="fa fa-tachometer"  style="color: white; aria-hidden="true"></i>
+                    Dashboard</a>
             </li>
             <li>
-                <a href="#">Shortcuts</a>
+                <a href="/users"><i class="fa fa-users" style="color: white;" aria-hidden="true"></i>
+                    Users</a>
             </li>
             <li>
-                <a href="#">Overview</a>
+                <a href="#"><i class="fa fa-plus" style="color: white;" aria-hidden="true"></i> Groups</a>
             </li>
+
+
+
             <li>
-                <a href="#">Events</a>
+                <a href="/aboutme"><i class="fa fa-male" style="color: white;" aria-hidden="true"></i> About Me</a>
             </li>
+
+
             <li>
-                <a href="#">About</a>
-            </li>
-            <li>
-                <a href="#">Services</a>
-            </li>
-            <li>
-                <a href="#">Contact</a>
+                <a href="/contact"><i class="fa fa-envelope" style="color: white;" aria-hidden="true"></i> Contact</a>
             </li>
         </ul>
     </div>
@@ -85,9 +91,10 @@
 
 <!-- jQuery -->
 <script src="js/jquery.js"></script>
-
-<!-- Bootstrap Core JavaScript -->
+<script src="js/scripts.js"></script>
 <script src="js/bootstrap.min.js"></script>
+
+
 
 <!-- Menu Toggle Script -->
 <script>
